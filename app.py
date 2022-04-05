@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request,
 from models import db, connect_db
 
 app = Flask(__name__)
@@ -15,4 +15,25 @@ db.create_all()
 def display_homepage():
     """Displays homepage"""
 
-    return render_template('#add homepage')
+    return render_template("register.html")
+
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+
+  form = 
+
+
+  return render_template("register_form.html")
+
+@app.route("/login", moethods=["GET", "POST"])
+def login():
+
+
+  return render_template("login.html")
+
+
+@app.get("/secret")
+def secret():
+
+  return ("secrets.html")
