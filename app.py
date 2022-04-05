@@ -1,5 +1,8 @@
-from flask import Flask, jsonify, render_template, request,
-from models import db, connect_db
+import email
+from flask import Flask, session, render_template, request, redirect
+from models import db, connect_db, User
+from forms import RegisterForm, LoginForm, CSRFProtectForm
+from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)
 
@@ -8,6 +11,8 @@ app.config['SECRET_KEY'] = "secret"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_ECHO'] = True
 
+debug = DebugToolbarExtension(app)
+
 connect_db(app)
 db.create_all()
 
@@ -15,18 +20,35 @@ db.create_all()
 def display_homepage():
     """Displays homepage"""
 
-    return render_template("register.html")
+    return redirect("/register")
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
 
-  form = 
+
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+
+        username = form.username.data
+        password = form.password.data
+        email = form.email.data
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+
+        user = User.register(username, password, email, first_name, last_name)
+        db.session.add(user)
+        db.session.commit()
+
+        session["username"] = user.username
+        return redirect("/secret")
+
+    return render_template("register.html", form=form)
 
 
-  return render_template("register_form.html")
 
-@app.route("/login", moethods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
 
 
@@ -35,5 +57,6 @@ def login():
 
 @app.get("/secret")
 def secret():
+    breakpoint()
 
-  return ("secrets.html")
+    return ("secrets.html")

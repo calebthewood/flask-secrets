@@ -1,12 +1,12 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %} Register Page {% endblock %}
+{% block title %} Register Form Page {% endblock %}
 
 {% block content %}
 
-<form id="register" method="POST">
-  {{ form.hidden_tag() }} 
-			# for all inputs not hidden display them
+<form id="register" method="POST" class="container">
+  {{ form.hidden_tag() }}
+
 		{% for field in form
          if field.widget.input_type != 'hidden' %}
 
@@ -24,4 +24,4 @@
   <button type="submit">Submit</button>
 </form>
 
-{% endblock % }
+{% endblock %}

@@ -1,12 +1,12 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block title %} Login Page {% endblock %}
 
 {% block content %}
 
 <form id="register" method="POST">
-  {{ form.hidden_tag() }} 
-			# for all inputs not hidden display them
+  {{ form.hidden_tag() }}
+
 		{% for field in form
          if field.widget.input_type != 'hidden' %}
 
