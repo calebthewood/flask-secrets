@@ -25,7 +25,7 @@ def display_homepage():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-
+    """Handles user registration, adds id to session"""
 
     form = RegisterForm()
 
