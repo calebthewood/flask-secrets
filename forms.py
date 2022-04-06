@@ -34,5 +34,12 @@ class LoginForm(FlaskForm):
     password = PasswordField("Password", validators=[InputRequired(),
                                                      Length(max=100)])
 
+class NoteForm(FlaskForm):
+    """Note form"""
+
+    title = StringField("Note Title", validators=[InputRequired(),
+                                                Length(max=100)])
+    content = StringField("Content", validators=[InputRequired()]
+
 class CSRFProtectForm(FlaskForm):
     """CSRF From"""

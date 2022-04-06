@@ -1,5 +1,5 @@
 import email
-from flask import Flask, session, render_template, request, redirect
+from flask import Flask, session, render_template, request, redirect, flash
 from models import db, connect_db, User
 from forms import RegisterForm, LoginForm, CSRFProtectForm
 from flask_debugtoolbar import DebugToolbarExtension
@@ -16,6 +16,8 @@ debug = DebugToolbarExtension(app)
 connect_db(app)
 db.create_all()
 
+
+
 @app.get("/")
 def display_homepage():
     """Displays homepage"""
@@ -23,9 +25,12 @@ def display_homepage():
     return redirect("/register")
 
 
+############################################################
+#registration
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """Handles user registration, adds id to session"""
+    """Handles user registration, adds username to session"""
 
     form = RegisterForm()
 
@@ -42,21 +47,60 @@ def register():
         db.session.commit()
 
         session["username"] = user.username
-        return redirect("/secret")
+        return redirect(f"/users/{username}")
 
     return render_template("register.html", form=form)
 
-
+############################################################
+#login
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """Produces login form and hanldes login"""
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+
+        username = form.username.data
+        password = form.password.data
+
+        user = User.authentication(username, password)
+
+        if user:
+            session["username"] = user.username
+            return redirect(f"/users/{username}")
+        else:
+            form.username.errors = ["Bad username/password"]
+
+    return render_template("login.html", form=form)
 
 
-  return render_template("login.html")
+@app.get("/users/<username>")
+def shows_user_page(username):
+    """Shows page for logged in user"""
+     if session["username"] != username:
+     flash("You must be logged in to view our awesome secret!!!")
+     return redirect("/")
 
+    user_notes = Notes.query.filter_by(owner=username)    
 
-@app.get("/secret")
-def secret():
-    breakpoint()
+    user = User.query.get_or_404(username)
+    return render_template("user.html", user=user)
 
-    return ("secrets.html")
+############################################################
+#logout
+
+@app.post("/logout")
+def logout():
+    """Logs out and redirects to homepage"""
+
+    form = CSRFProtectForm()    
+
+    if form.validate_on_submit():
+        session.pop("username",None)
+    
+    return redirect("/")
+
+############################################################
+#

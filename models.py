@@ -13,7 +13,7 @@ def connect_db(app):
 class User(db.Model):
     """User Model"""
 
-    __tablename__ = "secrets"
+    __tablename__ = "users"
 
     username = db.Column(
         db.Text(),
@@ -23,7 +23,6 @@ class User(db.Model):
         db.Text(),
         nullable=False)
 
-    #check iof SQLA validates for email?
     email = db.Column(
         db.Text(),
         nullable=False)
@@ -50,9 +49,37 @@ class User(db.Model):
                  last_name=last_name)
 
 
-    # @classmethod
-    # def login(cls, username, password):
+    @classmethod
+    def authentication(cls, username, password):
 
-    #     u = cls.query.filter_by(username=username).one_or_none()
+        u = cls.query.filter_by(username=username).one_or_none()
 
-    #     if u and bcrypt.check_password_hash(u.password, hashed):
+        if u and bcrypt.check_password_hash(u.password, password):
+            return u
+        else:
+            False
+
+
+class Note(db.Model):
+    """Note Model"""
+
+    __tablename__ = "notes"
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True,
+        autoincrement=True)
+
+    title = db.Column(
+        db.String(100),
+        nullable=False)
+
+    content = db.Column(
+        db.Text,
+        nullable=False)
+
+    owner = db.Column(
+        db.Text(),
+        nullable=False,
+        ForeignKey('users.username'))
+    )
