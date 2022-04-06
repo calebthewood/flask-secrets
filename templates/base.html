@@ -18,6 +18,13 @@
 
   {% endblock %}
 
+
+  {% for msg in get_flashed_messages() %}
+  <div class="alert alert-dismissible alert-success">
+    <strong>Well done!</strong> {{ msg }}
+  </div>
+  {% endfor %}
+
 </body>
 
 </html>

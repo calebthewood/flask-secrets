@@ -65,6 +65,9 @@ class Note(db.Model):
 
     __tablename__ = "notes"
 
+    playlists = db.relationship('User',
+                            backref='notes')
+
     id = db.Column(
         db.Integer,
         primary_key=True,
@@ -79,7 +82,6 @@ class Note(db.Model):
         nullable=False)
 
     owner = db.Column(
-        db.Text(),
-        nullable=False,
-        ForeignKey('users.username'))
+        db.Text,
+        db.ForeignKey('users.username')
     )

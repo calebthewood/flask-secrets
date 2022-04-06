@@ -10,9 +10,12 @@
 
   <h2>{{ user.email }}</h2>
 
-    <form action="/logout" method="POST">
-      <button>logout</button>
-    </form>
+
+  <form id="CSRFProtectForm" action="/logout" method="POST">
+    {{ form.hidden_tag() }}
+    <button>logout</button>
+  </form>
+
 </div>
 
 {% endblock %}
